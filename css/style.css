@@ -1,0 +1,98 @@
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+    background-color: #1a5c37 !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Tarjeta Principal */
+.main-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.main-card h1 {
+    color: #1a5c37;
+    font-weight: 800;
+}
+
+/* Diseño del Mapa */
+#map-placeholder {
+    background: #e8f5e9;
+    height: 300px;
+    border-radius: 15px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #2e7d32;
+    color: #2e7d32;
+}
+
+.map-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+/* Tarjetas de Información */
+.info-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    border-bottom: 4px solid #2e7d32;
+    height: 100%;
+}
+
+.info-card h4 {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+/* Tarjeta del Formulario */
+.form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.form-card h3 {
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+}
+
+.form-control {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    height: 45px;
+}
+
+.btn-report {
+    background: #e63946;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 12px;
+    transition: 0.3s;
+}
+
+.btn-report:hover {
+    background: #c1121f;
+    transform: scale(1.02);
+}
+
+/* Tarjeta de Acción */
+.action-card {
+    background: #1a5c37;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+}
