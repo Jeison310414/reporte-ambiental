@@ -24,21 +24,28 @@
                     <h1>Reporte de Contaminación Ambiental</h1>
                     <p class="text-muted">Plataforma ciudadana para la detección de basurales, quema y vertidos.</p>
                     
+                    <div class="d-flex justify-content-between align-items-end mb-2">
+                        <span class="text-success font-weight-bold">📍 Mapa Interactivo</span>
+                        <button type="button" class="btn btn-gps btn-sm" onclick="miUbicacion()">
+                            Usar mi ubicación actual
+                        </button>
+                    </div>
+
                     <div id="map"></div>
-                    <small class="text-muted mt-2 d-block text-center">Haz clic en el mapa para marcar el punto exacto del incidente.</small>
+                    <small class="text-muted mt-2 d-block text-center">Haz clic en el mapa o usa el GPS para marcar el incidente.</small>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="info-card">
                             <h4>Nuestra Misión</h4>
-                            <p>Facilitar el reporte ciudadano de delitos ambientales para una respuesta rápida de las autoridades.</p>
+                            <p>Facilitar el reporte ciudadano de delitos ambientales para una respuesta rápida.</p>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="info-card">
                             <h4>Nuestra Visión</h4>
-                            <p>Ser la red de monitoreo ambiental más grande para prevenir la contaminación industrial y urbana.</p>
+                            <p>Ser la red de monitoreo ambiental más grande para prevenir la contaminación.</p>
                         </div>
                     </div>
                 </div>
@@ -51,7 +58,7 @@
                     <form id="reporteForm">
                         <div class="form-group">
                             <label>Tipo de Foco</label>
-                            <select class="form-control">
+                            <select class="form-control" id="tipoFoco">
                                 <option>Basural Clandestino</option>
                                 <option>Quema de Residuos</option>
                                 <option>Vertidos Industriales</option>
@@ -59,8 +66,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Ubicación exacta</label>
-                            <input type="text" id="ubicacionInput" class="form-control" placeholder="Ej. Calle 10 con Av. B">
+                            <label>Ubicación (Coordenadas)</label>
+                            <input type="text" id="ubicacionInput" class="form-control" placeholder="Haga clic en el mapa" readonly style="background-color: #e9ecef;">
                         </div>
                         <div class="form-group">
                             <label>Nivel de Urgencia</label>
@@ -79,15 +86,6 @@
                         <button type="submit" class="btn btn-report btn-block mt-4">ENVIAR ALERTA</button>
                     </form>
                 </div>
-
-                <div class="action-card mt-4">
-                    <h5>¿Quiénes actúan?</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li>✅ <strong>INTT:</strong> Control vial.</li>
-                        <li>✅ <strong>Ministerio:</strong> Vertidos.</li>
-                        <li>✅ <strong>Alcaldía:</strong> Basura.</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
@@ -97,38 +95,62 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // Inicializar mapa (Centrado en Caracas como ejemplo)
+        // 1. Inicializar Mapa (Centrado en Caracas, por ejemplo)
         var map = L.map('map').setView([10.4806, -66.8983], 13);
 
-        // Capa de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Variable para el marcador
         var marker;
 
-        // Evento al hacer clic en el mapa
+        // 2. Función para manejar el clic en el mapa
         map.on('click', function(e) {
-            var lat = e.latlng.lat.toFixed(6);
-            var lng = e.latlng.lng.toFixed(6);
-
-            // Mover o crear el marcador
-            if (marker) {
-                marker.setLatLng(e.latlng);
-            } else {
-                marker = L.marker(e.latlng).addTo(map);
-            }
-
-            // Escribir en el input del formulario
-            document.getElementById('ubicacionInput').value = "Lat: " + lat + ", Lng: " + lng;
+            actualizarMarcador(e.latlng.lat, e.latlng.lng);
         });
 
-        // Prevenir envío del formulario para la demo
+        // 3. Función de Geolocalización (GPS)
+        function miUbicacion() {
+            if (!navigator.geolocation) {
+                alert("Tu navegador no soporta geolocalización");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(function(posicion) {
+                var lat = posicion.coords.latitude;
+                var lon = posicion.coords.longitude;
+                map.setView([lat, lon], 16);
+                actualizarMarcador(lat, lon);
+                alert("Ubicación encontrada");
+            }, function() {
+                alert("Error: No se pudo acceder a tu ubicación. Verifica los permisos.");
+            });
+        }
+
+        // 4. Función para mover marcador y llenar input
+        function actualizarMarcador(lat, lng) {
+            var latFixed = lat.toFixed(6);
+            var lngFixed = lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+            
+            document.getElementById('ubicacionInput').value = latFixed + ", " + lngFixed;
+        }
+
+        // 5. Envío del Formulario
         document.getElementById('reporteForm').onsubmit = function(e) {
             e.preventDefault();
-            alert("¡Alerta enviada con éxito! Gracias por cuidar el ambiente.");
+            if(!document.getElementById('ubicacionInput').value) {
+                alert("Por favor, selecciona una ubicación en el mapa.");
+                return;
+            }
+            alert("✅ Reporte enviado a las autoridades. ¡Gracias por tu compromiso ambiental!");
         };
     </script>
 </body>
 </html>
+
